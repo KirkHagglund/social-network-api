@@ -1,5 +1,6 @@
 const { Schema, model } = require('mongoose');
-const { Reaction } = require('./Reaction');
+const Reaction = require('./Reaction');
+const dateFormat = require('../utils/dateformat');
 
 // Schema to create Thought model
 const thoughtSchema = new Schema(
@@ -13,7 +14,7 @@ const thoughtSchema = new Schema(
     createdAt: {
       type: Date,
       default: Date.now,
-      // Need a getter method for this
+      get: timestamp => dateFormat(timestamp)
     },
     username: {
       type: String,
@@ -30,14 +31,10 @@ const thoughtSchema = new Schema(
 );
 
 // Create a virtual called reactionCount that counts the length of the reactions array
-/*videoSchema
-  .virtual('getResponses')
-  // Getter
-  .get(function () {
-    return this.responses.length;
-  });*/
+thoughtSchema.virtual('reactionCount').get(function () {
+  return this.reactions.length;
+});
 
-// Initialize our Video model
 const Thought = model('thought', thoughtSchema);
 
 module.exports = Thought;
